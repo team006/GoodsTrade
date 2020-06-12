@@ -1,6 +1,6 @@
-package com.goodstrade.goodstrade.Service;
+package com.goodstrade.goodstrade.service;
 
-import com.goodstrade.goodstrade.Repository.ImageRepository;
+import com.goodstrade.goodstrade.repository.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

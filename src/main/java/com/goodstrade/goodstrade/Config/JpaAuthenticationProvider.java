@@ -1,7 +1,7 @@
-package com.goodstrade.goodstrade.Config;
+package com.goodstrade.goodstrade.config;
 
-import com.goodstrade.goodstrade.Model.User;
-import com.goodstrade.goodstrade.Repository.UserRepository;
+import com.goodstrade.goodstrade.entity.User;
+import com.goodstrade.goodstrade.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;

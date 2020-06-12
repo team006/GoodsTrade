@@ -1,13 +1,21 @@
-package com.goodstrade.goodstrade.Controller;
+package com.goodstrade.goodstrade.controller;
 
-import com.goodstrade.goodstrade.Model.Role;
-import com.goodstrade.goodstrade.Model.User;
-import com.goodstrade.goodstrade.Repository.UserRepository;
-import com.goodstrade.goodstrade.Service.UserService;
+import com.goodstrade.goodstrade.entity.Role;
+import com.goodstrade.goodstrade.entity.User;
+import com.goodstrade.goodstrade.validator.RegisterValidator;
+import com.goodstrade.goodstrade.repository.UserRepository;
+import com.goodstrade.goodstrade.service.user.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
 
 @Controller
 public class UserController {
@@ -18,10 +26,16 @@ public class UserController {
     private static final String SELLER_TEST_PASSWORD = "seller1";
     private static final String TEST_USER_NAME = "user1";
     private static final String TEST_PASSWORD = "user1";
+    private static final Logger log = LoggerFactory.getLogger(User.class);
 
+    @Autowired
+    private RegisterValidator registerValidator;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/createadmin1")
     public String createTestAdmin1() {
@@ -34,6 +48,7 @@ public class UserController {
         user.setUsername(ADMIN_TEST_USER_NAME);
         user.setPassword(ADMIN_TEST_PASSWORD);
         user.setRole(Role.ROLE_ADMIN);
+        user.setName("a");
         user.setAddress("ads");
         user.setEmail("ass");
         user.setTel("0123");
@@ -53,6 +68,7 @@ public class UserController {
         user.setUsername(TEST_USER_NAME);
         user.setPassword(TEST_PASSWORD);
         user.setRole(Role.ROLE_CLIENT);
+        user.setName("b");
         user.setAddress("ads");
         user.setEmail("ass");
         user.setTel("0123");
@@ -72,6 +88,7 @@ public class UserController {
         user.setUsername(SELLER_TEST_USER_NAME);
         user.setPassword(SELLER_TEST_PASSWORD);
         user.setRole(Role.ROLE_SHOP);
+        user.setName("c");
         user.setAddress("ads");
         user.setEmail("ass");
         user.setTel("0123");
@@ -102,5 +119,57 @@ public class UserController {
         return "AnyOne Can Come here";
     }
 
+
+    @GetMapping("/login")
+    public String login(){
+        return "login";
+    }
+
+    @GetMapping("/register")
+    public String registration(ModelMap model){
+        if(!model.containsAttribute("createUser")) {
+            model.addAttribute("createUser", new User());
+        }
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String register(@Valid User user,
+                           BindingResult bindingResult,
+                           RedirectAttributes redirectAttributes){
+
+        registerValidator.validate(user,bindingResult);
+        if (bindingResult.hasErrors()){
+            log.info("User Form Error");
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.createUser",bindingResult);
+            redirectAttributes.addFlashAttribute("createUser", user);
+            return  "redirect:/register";
+        }
+
+        user.setRole(Role.ROLE_CLIENT);
+        userRepository.save(user);
+        return "redirect:/login";
+    }
+
+//    @PostMapping("/register")
+//    String register(@Valid @ModelAttribute("createUser") User createUser, BindingResult result, ModelMap model) {
+//        log.info(createUser.toString());
+//        if (result.hasErrors()) {
+//            return "index";
+//        }
+//
+//        registerValidator.validate(createUser, result);
+//
+//        if (result.hasErrors()) {
+//            List<ObjectError> allErrors = result.getAllErrors();
+//            for (ObjectError objectError : allErrors) {
+//                log.error("\t*** " + objectError);
+//            }
+//            return "index";
+//        } else {
+//            userService.save(createUser);
+//            return "redirect:login";
+//        }
+//    }
 
 }

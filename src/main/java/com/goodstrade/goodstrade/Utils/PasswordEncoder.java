@@ -1,4 +1,4 @@
-package com.goodstrade.goodstrade.Utils;
+package com.goodstrade.goodstrade.utils;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
